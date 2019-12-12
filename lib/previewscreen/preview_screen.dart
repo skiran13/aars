@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:tflite/tflite.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PreviewImageScreen extends StatefulWidget {
   final String imagePath;
@@ -17,31 +14,42 @@ class PreviewImageScreen extends StatefulWidget {
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
   Future loadModel() async {
-    await Tflite.close();
     String ress = await Tflite.loadModel(
         model: "assets/model.tflite",
         labels: "assets/label.txt",
         numThreads: 1 // defaults to 1
         );
-     print(ress)
+    print(ress);
   }
 
   void runModel(filepath) async {
     var recognitions = await Tflite.runModelOnImage(
-        path: filepath, // required
-        imageMean: 0.0, // defaults to 117.0
-        imageStd: 255.0, // defaults to 1.0
-        numResults: 2, // defaults to 5
-        threshold: 0.2, // defaults to 0.1
-        asynch: true // defaults to true
-        );
-   
-
-    recognitions.map((res) {
-      print(
-          "${res["index"]} - ${res["label"]}: ${res["confidence"].toStringAsFixed(3)}");
-    });
-    await Tflite.close();
+      path: filepath, // required
+      numResults: 2,
+      threshold: 0.05,
+      imageMean: 127.5,
+      imageStd: 127.5,
+    );
+    print(recognitions[0]["label"]);
+    if (recognitions[0]["label"].toString() == "1 Dog") {
+      Fluttertoast.showToast(
+          msg: "Dog",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Cat",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 
   @override
