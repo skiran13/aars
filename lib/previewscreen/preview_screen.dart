@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart';
 
 class PreviewImageScreen extends StatefulWidget {
   final String imagePath;
@@ -21,17 +22,34 @@ class UserLocation {
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
   UserLocation _currentLocation;
   var location = Location();
+  final String url = "https://aars-server.v16.now.sh/api/accident/new";
+
   Future<UserLocation> getLocation() async {
     try {
       var userLocation = await location.getLocation();
       _currentLocation = UserLocation(
-        latitude: userLocation.latitude,
-        longitude: userLocation.longitude
-      );
+          latitude: userLocation.latitude, longitude: userLocation.longitude);
     } on Exception catch (e) {
       print('Could not get location: ${e.toString()}');
     }
-    print(_currentLocation.latitude.toString()+','+_currentLocation.longitude.toString()+','+DateTime.now().toString());
+    print(_currentLocation.latitude.toString() +
+        ',' +
+        _currentLocation.longitude.toString() +
+        ',' +
+        DateTime.now().toString());
+  }
+
+  _makePostRequest() async {
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String json =
+        '{"latitude": userLocation.latitude.toString(), "longitude": userLocation.longitude.toString(), "time": DateTime.now().toString()}';
+    // make POST request
+    Response response = await post(url, headers: headers, body: json);
+    // check the status code for the result
+    int statusCode = response.statusCode;
+    print(statusCode);
+    // this API passes back the id of the new item added to the body
+    //String body = response.body;
   }
 
   Future loadModel() async {
@@ -54,6 +72,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     print(recognitions[0]["label"]);
     if (recognitions[0]["label"].toString() == "1 Dog") {
       getLocation();
+      _makePostRequest();
       Fluttertoast.showToast(
           msg: "Dog",
           toastLength: Toast.LENGTH_SHORT,
@@ -103,7 +122,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                     runModel(widget.imagePath);
                     //TODO: feed img model.
                   },
-                  child: Text('Share'),
+                  child: Text('Work'),
                 ),
               ),
             ),
