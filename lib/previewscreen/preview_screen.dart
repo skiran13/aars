@@ -2,17 +2,38 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:location/location.dart';
 
 class PreviewImageScreen extends StatefulWidget {
   final String imagePath;
-
   PreviewImageScreen({this.imagePath});
 
   @override
   _PreviewImageScreenState createState() => _PreviewImageScreenState();
 }
 
+class UserLocation {
+  final double latitude;
+  final double longitude;
+  UserLocation({this.latitude, this.longitude});
+}
+
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
+  UserLocation _currentLocation;
+  var location = Location();
+  Future<UserLocation> getLocation() async {
+    try {
+      var userLocation = await location.getLocation();
+      _currentLocation = UserLocation(
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude
+      );
+    } on Exception catch (e) {
+      print('Could not get location: ${e.toString()}');
+    }
+    print(_currentLocation.latitude.toString()+','+_currentLocation.longitude.toString()+','+DateTime.now().toString());
+  }
+
   Future loadModel() async {
     String ress = await Tflite.loadModel(
         model: "assets/model.tflite",
@@ -32,6 +53,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     );
     print(recognitions[0]["label"]);
     if (recognitions[0]["label"].toString() == "1 Dog") {
+      getLocation();
       Fluttertoast.showToast(
           msg: "Dog",
           toastLength: Toast.LENGTH_SHORT,

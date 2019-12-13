@@ -25,6 +25,7 @@ dependencies:
   esys_flutter_share:
   tflite:
   fluttertoast: ^3.1.3
+  location: ^2.3.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
