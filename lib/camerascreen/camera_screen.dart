@@ -70,7 +70,7 @@ class _CameraScreenState extends State {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Click To Share'),
+        title: const Text('Click Pic for Emergency'),
         backgroundColor: Colors.blueGrey,
       ),
       body: Container(
