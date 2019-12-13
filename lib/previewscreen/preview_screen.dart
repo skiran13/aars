@@ -22,8 +22,7 @@ class UserLocation {
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
   UserLocation _currentLocation;
   var location = Location();
-  final String url = "https://aars-server.v16.now.sh/api/accident/new";
-
+  final String url = "https://aars-server-eq41zqwqg.now.sh/api/accident/new";
   Future<UserLocation> getLocation() async {
     try {
       var userLocation = await location.getLocation();
@@ -37,12 +36,13 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         _currentLocation.longitude.toString() +
         ',' +
         DateTime.now().toString());
+    return _currentLocation;
   }
 
-  _makePostRequest() async {
+  _makePostRequest(UserLocation userLocation) async {
     Map<String, String> headers = {"Content-type": "application/json"};
     String json =
-        '{"latitude": userLocation.latitude.toString(), "longitude": userLocation.longitude.toString(), "time": DateTime.now().toString()}';
+        '{"latitude": ${userLocation.latitude.toString()}, "longitude": ${userLocation.longitude.toString()}, "time": ${DateTime.now().toString()}}';
     // make POST request
     Response response = await post(url, headers: headers, body: json);
     // check the status code for the result
@@ -55,7 +55,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   Future loadModel() async {
     String ress = await Tflite.loadModel(
         model: "assets/model.tflite",
-        labels: "assets/label.txt",
+        labels: "assets/labels.txt",
         numThreads: 1 // defaults to 1
         );
     print(ress);
@@ -70,24 +70,38 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       imageStd: 127.5,
     );
     print(recognitions[0]["label"]);
-    if (recognitions[0]["label"].toString() == "1 Dog") {
-      getLocation();
-      _makePostRequest();
+    if (recognitions[0]["label"].toString() == "0 Accident") {
+      getLocation().then((loc) {
+        _makePostRequest(loc);
+      });
+
       Fluttertoast.showToast(
-          msg: "Dog",
+          msg: "Accident",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIos: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-    } else {
+    } else if (recognitions[0]["label"].toString() == "1 Not Accident") {
+      getLocation().then((loc) {
+        _makePostRequest(loc);
+      });
       Fluttertoast.showToast(
-          msg: "Cat",
+          msg: "Not Accident",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIos: 1,
           backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Error",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.blue,
           textColor: Colors.white,
           fontSize: 16.0);
     }
