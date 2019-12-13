@@ -122,7 +122,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                     runModel(widget.imagePath);
                     //TODO: feed img model.
                   },
-                  child: Text('Work'),
+                  child: Text('Request Assistance'),
                 ),
               ),
             ),
