@@ -126,20 +126,20 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Preview'),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.red[600],
       ),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(
-                flex: 2,
+                flex: 5,
                 child: Image.file(File(widget.imagePath), fit: BoxFit.cover)),
-            SizedBox(height: 10.0),
             Flexible(
-              flex: 1,
+                //flex: 1,
+                child: new SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.all(50.0),
+                padding: EdgeInsets.all(20.0),
                 child: TextFormField(
                     controller: myController,
                     decoration: new InputDecoration(
@@ -151,12 +151,13 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           borderSide: new BorderSide(),
                         ))),
               ),
-            ),
+            )),
             Flexible(
               flex: 1,
               child: Container(
-                padding: EdgeInsets.all(30.0),
+                padding: EdgeInsets.all(20.0),
                 child: RaisedButton(
+                  color: Colors.green[300],
                   onPressed: () {
                     runModel(widget.imagePath);
                     print(myController.text);

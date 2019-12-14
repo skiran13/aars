@@ -66,37 +66,68 @@ class _CameraScreenState extends State {
     }
   }
 
+  BoxDecoration myBoxDecoration() {
+    return BoxDecoration(
+      border: Border.all(
+        width: 15,
+        color: Colors.red[600],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Click Pic for Emergency'),
-        backgroundColor: Colors.blueGrey,
-      ),
-      body: Container(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: _cameraPreviewWidget(),
-              ),
-              SizedBox(height: 10.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _cameraTogglesRowWidget(),
-                  _captureControlRowWidget(context),
-                  Spacer()
-                ],
-              ),
-              SizedBox(height: 20.0)
-            ],
+        appBar: AppBar(
+          leading: new IconButton(
+            icon: new Icon(Icons.healing),
+            onPressed: () {},
+          ),
+          title: const Text(
+            'Salvador',
+            style: TextStyle(fontSize: 30, fontFamily: "Righteous"),
+          ),
+          backgroundColor: Colors.red[600],
+        ),
+        body: Container(
+          decoration: myBoxDecoration(),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: _cameraPreviewWidget(),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Stack(
+          children: <Widget>[
+            Align(
+              alignment: FractionalOffset(0.1, 0.95),
+              child: new FloatingActionButton(
+                  heroTag: "Switch",
+                  child: _cameraTogglesRowWidget(),
+                  backgroundColor: Colors.red[600],
+                  onPressed: () {
+                    _onSwitchCamera();
+                  }),
+            ),
+            Align(
+              alignment: FractionalOffset(0.5, 0.95),
+              child: new FloatingActionButton(
+                  heroTag: "Capture",
+                  child: Icon(Icons.camera, size: 40),
+                  backgroundColor: Colors.red[600],
+                  onPressed: () {
+                    _onCapturePressed(context);
+                  }),
+            ),
+          ],
+        ));
   }
 
   /// Display Camera preview.
@@ -118,59 +149,12 @@ class _CameraScreenState extends State {
     );
   }
 
-  /// Display the control bar with buttons to take pictures
-  Widget _captureControlRowWidget(context) {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            FloatingActionButton(
-                child: Icon(Icons.camera),
-                backgroundColor: Colors.blueGrey,
-                onPressed: () {
-                  _onCapturePressed(context);
-                })
-          ],
-        ),
-      ),
-    );
-  }
-
   /// Display a row of toggle to select the camera (or a message if no camera is available).
   Widget _cameraTogglesRowWidget() {
     if (cameras == null || cameras.isEmpty) {
-      return Spacer();
-    }
-
-    CameraDescription selectedCamera = cameras[selectedCameraIdx];
-    CameraLensDirection lensDirection = selectedCamera.lensDirection;
-
-    return Expanded(
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: FlatButton.icon(
-            onPressed: _onSwitchCamera,
-            icon: Icon(_getCameraLensIcon(lensDirection)),
-            label: Text(
-                "${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1)}")),
-      ),
-    );
-  }
-
-  IconData _getCameraLensIcon(CameraLensDirection direction) {
-    switch (direction) {
-      case CameraLensDirection.back:
-        return Icons.camera_rear;
-      case CameraLensDirection.front:
-        return Icons.camera_front;
-      case CameraLensDirection.external:
-        return Icons.camera;
-      default:
-        return Icons.device_unknown;
-    }
+      return Icon(Icons.sync_disabled, size: 40);
+    } else
+      return Icon(Icons.sync, size: 40);
   }
 
   void _onSwitchCamera() {
