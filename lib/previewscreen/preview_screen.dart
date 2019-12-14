@@ -56,6 +56,16 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     // check the status code for the result
     int statusCode = response.statusCode;
     //print(json);
+    if (statusCode == 400) {
+      Fluttertoast.showToast(
+          msg: "Request can't be Sent!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.grey,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
     //print(statusCode);
     // this API passes back the id of the new item added to the body
     //String body = response.body;
@@ -85,10 +95,10 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       });
 
       Fluttertoast.showToast(
-          msg: "Accident",
+          msg: "Sent",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIos: 1,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 2,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
@@ -97,20 +107,20 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         _makePostRequest(loc);
       });
       Fluttertoast.showToast(
-          msg: "Not Accident",
+          msg: "Retry",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIos: 1,
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.grey,
           textColor: Colors.white,
           fontSize: 16.0);
     } else {
       Fluttertoast.showToast(
           msg: "Error",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIos: 1,
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.grey,
           textColor: Colors.white,
           fontSize: 16.0);
     }
