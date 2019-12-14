@@ -122,6 +122,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     loadModel();
   }
 
+  FocusNode myFocusNode = new FocusNode();
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -133,40 +134,51 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(
-                flex: 5,
+                flex: 3,
                 child: Image.file(File(widget.imagePath), fit: BoxFit.cover)),
             Flexible(
                 //flex: 1,
-                child: new SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.all(20.0),
-                child: TextFormField(
-                    controller: myController,
-                    decoration: new InputDecoration(
-                        labelText: "Enter Description",
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.all(20.0),
-                        border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(20.0),
-                          borderSide: new BorderSide(),
-                        ))),
-              ),
-            )),
-            Flexible(
-              flex: 1,
-              child: Container(
-                padding: EdgeInsets.all(20.0),
-                child: RaisedButton(
-                  color: Colors.green[300],
-                  onPressed: () {
-                    runModel(widget.imagePath);
-                    print(myController.text);
-                    //TODO: feed img model.
-                  },
-                  child: Text('Request Assistance'),
+                child: Center(
+              child: ListView(children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(20.0),
+                  child: TextFormField(
+                      focusNode: myFocusNode,
+                      controller: myController,
+                      decoration: new InputDecoration(
+                          labelText: "Enter Description",
+                          fillColor: Colors.white,
+                          labelStyle: TextStyle(color: Colors.green),
+                          focusedBorder: new OutlineInputBorder(
+                              borderSide: new BorderSide(color: Colors.green),
+                              borderRadius: new BorderRadius.circular(20.0)),
+                          contentPadding: const EdgeInsets.all(20.0),
+                          border: new OutlineInputBorder(
+                            borderRadius: new BorderRadius.circular(20.0),
+                            borderSide: new BorderSide(color: Colors.green),
+                          ))),
                 ),
-              ),
-            ),
+                Container(
+                  padding:
+                      EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+                  child: ButtonTheme(
+                    height: 55.0,
+                    child: RaisedButton(
+                      color: Colors.green[300],
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      onPressed: () {
+                        runModel(widget.imagePath);
+                        print(myController.text);
+                        //TODO: feed img model.
+                      },
+                      child: Text('Request Assistance'),
+                    ),
+                  ),
+                )
+              ]),
+            )),
           ],
         ),
       ),
