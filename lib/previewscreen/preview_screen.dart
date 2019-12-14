@@ -20,9 +20,17 @@ class UserLocation {
 }
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
+  final myController = TextEditingController();
+  @override
+  // void dispose() {
+  //   // Clean up the controller when the widget is disposed.
+  //   myController.dispose();
+  //   super.dispose();
+  // }
+
   UserLocation _currentLocation;
   var location = Location();
-  final String url = "https://aars-server-eq41zqwqg.now.sh/api/accident/new";
+  final String url = "https://aars-server.v16.now.sh/api/accident/new";
   Future<UserLocation> getLocation() async {
     try {
       var userLocation = await location.getLocation();
@@ -42,12 +50,13 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   _makePostRequest(UserLocation userLocation) async {
     Map<String, String> headers = {"Content-type": "application/json"};
     String json =
-        '{"latitude": ${userLocation.latitude.toString()}, "longitude": ${userLocation.longitude.toString()}, "time": ${DateTime.now().toString()}}';
+        '{"lat": "${userLocation.latitude.toString()}", "long": "${userLocation.longitude.toString()}", "time": "${DateTime.now().toString()}","message": "${myController.text}"}';
     // make POST request
     Response response = await post(url, headers: headers, body: json);
     // check the status code for the result
     int statusCode = response.statusCode;
-    print(statusCode);
+    //print(json);
+    //print(statusCode);
     // this API passes back the id of the new item added to the body
     //String body = response.body;
   }
@@ -130,10 +139,27 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
             Flexible(
               flex: 1,
               child: Container(
-                padding: EdgeInsets.all(60.0),
+                padding: EdgeInsets.all(50.0),
+                child: TextFormField(
+                    controller: myController,
+                    decoration: new InputDecoration(
+                        labelText: "Enter Description",
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.all(20.0),
+                        border: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(20.0),
+                          borderSide: new BorderSide(),
+                        ))),
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Container(
+                padding: EdgeInsets.all(30.0),
                 child: RaisedButton(
                   onPressed: () {
                     runModel(widget.imagePath);
+                    print(myController.text);
                     //TODO: feed img model.
                   },
                   child: Text('Request Assistance'),
