@@ -99,13 +99,10 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIos: 2,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.grey,
           textColor: Colors.white,
           fontSize: 16.0);
     } else if (recognitions[0]["label"].toString() == "1 Not Accident") {
-      getLocation().then((loc) {
-        _makePostRequest(loc);
-      });
       Fluttertoast.showToast(
           msg: "Retry",
           toastLength: Toast.LENGTH_SHORT,
